@@ -1,0 +1,11 @@
+dim_dali\xbee_router_atcmd.o: ..\App\digi_mesh\Xbee_Router_ATcmd.c
+dim_dali\xbee_router_atcmd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+dim_dali\xbee_router_atcmd.o: ..\App\digi_mesh\platform_config.h
+dim_dali\xbee_router_atcmd.o: C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include\stm32f10x.h
+dim_dali\xbee_router_atcmd.o: F:\VILIGHT\2019\GITHUB\dim_dali\dim_dali\MDK-ARM\RTE\_dim_dali\RTE_Components.h
+dim_dali\xbee_router_atcmd.o: ../Drivers/CMSIS/Include/core_cm3.h
+dim_dali\xbee_router_atcmd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+dim_dali\xbee_router_atcmd.o: ../Drivers/CMSIS/Include/cmsis_version.h
+dim_dali\xbee_router_atcmd.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+dim_dali\xbee_router_atcmd.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+dim_dali\xbee_router_atcmd.o: C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include\system_stm32f10x.h
