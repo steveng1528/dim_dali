@@ -12,6 +12,7 @@
 #include "stm32f1xx_hal.h"
 #include "SW_Timer_Public.h"
 
+
 /**
  * @struct InputHdl_Handle_t
  * @brief struct for manage SW timer.
@@ -34,9 +35,7 @@ void SW_Timer_clear(unsigned char Loc_TIMER);
 
 /**
   * @brief  init SW timer that is called by main process
-  *         
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */
@@ -51,9 +50,7 @@ unsigned char i;
 }
 /**
   * @brief  clear timer all
-  *         
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */
@@ -63,13 +60,11 @@ void SW_Timer_clear(unsigned char Loc_TIMER)
 	SWTimer_Val[Loc_TIMER].countdown     	= 0xffffffff;
 	SWTimer_Val[Loc_TIMER].time_setting  	= 0;
 	SWTimer_Val[Loc_TIMER].Is_expired    	= 0;
-    SWTimer_Val[Loc_TIMER].pFunc         	= NULL;
+  SWTimer_Val[Loc_TIMER].pFunc         	= NULL;
 }	
 /**
   * @brief  call by main process
-  *         
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */
@@ -91,9 +86,7 @@ unsigned char i;
 }
 /**
   * @brief  the 1st step to process SW Timer, assign value timer
-  *         
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */
@@ -108,9 +101,7 @@ void SW_Timer_create( SW_TIMER_ENUM Loc_TIMER, unsigned int timeout_in_S /*, Tim
 
 /**
   * @brief  the 1st step to process SW Timer, assign value timer
-  *
   * @param  None
-  *
   * @retval None
   * @author : Thai Pham
   */
@@ -125,10 +116,8 @@ void SW_Timer_create_Fcallback( SW_TIMER_ENUM Loc_TIMER, unsigned int timeout_in
 }
 
 /**
-  * @brief  2nd step that make timer run, then wait to it's expired
-  *         
+  * @brief  2nd step that make timer run, then wait to it's expired     
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */
@@ -153,9 +142,7 @@ void SW_Timer_Stop(SW_TIMER_ENUM Loc_TIMER)
 }
 /**
   * @brief  call by system tick ISR that signal every 1ms
-  *         
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */
@@ -186,10 +173,8 @@ unsigned char i;
 
 /**
   * @brief  if timer start and then expied after that, functions return to '1'
-  *         
   * @param  None
-  *         
-  * @retval None
+  * @retval :None
   * @author : Thai Pham
   */
 unsigned char Get_Timer_expired(SW_TIMER_ENUM Loc_TIMER)
@@ -208,10 +193,8 @@ unsigned char Get_Timer_expired(SW_TIMER_ENUM Loc_TIMER)
 }
 
 /**
-  * @brief  it's called in initialize phase that starting system
-  *         
+  * @brief  it's called in initialize phase that starting system   
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */
@@ -222,9 +205,7 @@ unsigned int Get_Timer_Counter(SW_TIMER_ENUM Loc_TIMER)
 
 /**
   * @brief  it's called in initialize phase that starting system
-  *         
   * @param  None
-  *         
   * @retval None
   * @author : Thai Pham
   */

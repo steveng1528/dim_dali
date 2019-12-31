@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE,USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\App\debug_printf;..\App\digi_mesh;..\App\protothread;..\App\dali</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\App\debug_printf;..\App\digi_mesh;..\App\protothread;..\App\dali;..\App\sw_timer;..\App\lamp_control</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -412,7 +412,54 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>::CMSIS</GroupName>
+          <GroupName>debug_printf</GroupName>
+          <Files>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\debug_printf\debug.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>sys_time</GroupName>
+          <Files>
+            <File>
+              <FileName>SW_Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\sw_timer\SW_Timer.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>protothread</GroupName>
+          <Files>
+            <File>
+              <FileName>lc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\protothread\lc.h</FilePath>
+            </File>
+            <File>
+              <FileName>lc-switch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\protothread\lc-switch.h</FilePath>
+            </File>
+            <File>
+              <FileName>pt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\protothread\pt.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lamp_control</GroupName>
+          <Files>
+            <File>
+              <FileName>Lamp_status.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\lamp_control\Lamp_status.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Application/User</GroupName>
@@ -538,6 +585,9 @@
               <FilePath>../Src/system_stm32f1xx.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>

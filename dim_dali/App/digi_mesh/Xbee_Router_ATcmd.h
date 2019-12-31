@@ -21,6 +21,9 @@
 #ifndef  XBEE_ATCMD_ROUTER_H
 #define  XBEE_ATCMD_ROUTER_H
 
+#include "stm32f1xx_hal.h"
+#include "platform_typedef.h"
+
 /** Possible values for the \c frame_type field of frames sent to and
 	from the XBee module.  Values with the upper bit set (0x80) are frames
 	we receive from the XBee module.  Values with the upper bit clear are
@@ -274,8 +277,8 @@ enum xbee_dev_mode {
 					to receive any additional notifications.
 */
 typedef int (*xbee_frame_handler_fn)(
-	u8 					*frame,
-	u8 					length
+	uint8_t 					*frame,
+	uint8_t 					length
 );
 
 typedef struct xbee_dispatch_table_entry {
@@ -526,10 +529,10 @@ typedef struct xbee_frame_transmit_status_t {
 } xbee_frame_transmit_status_t;
 
 // ---- API for command lists ----
-int xbee_handle_receive_explicit( u8 *rawframe, u8  length );
-int xbee_cmd_modem_status( u8 *rawframe, u8  length );
-int xbee_ATcmd_handle_response( u8 *rawframe, u8  length );
-int xbee_handle_transmit_status( u8 *rawframe, u8  length );
+int xbee_handle_receive_explicit( uint8_t *rawframe, uint8_t  length );
+int xbee_cmd_modem_status( uint8_t *rawframe, uint8_t  length );
+int xbee_ATcmd_handle_response( uint8_t *rawframe, uint8_t  length );
+int xbee_handle_transmit_status( uint8_t *rawframe, uint8_t  length );
 #endif
 
   

@@ -3,43 +3,85 @@
   ******************************************************************************
   * @file    Xbee_Digi_Router.c
   * @author  Thai Pham
-  * @version V1.0
-  * @date    October 01, 2015
+	* @modify  Steve Nguyen
+	* @version V1.1
+  * @date    Dec 31, 2019
   * @brief   Main program body
   ******************************************************************************
-  * @copy
-  *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-  *
-  * <h2><center>&copy; COPYRIGHT 2009 STMicroelectronics</center></h2>
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "main.h"
 #include "stddef.h"
 #include "string.h"
-#include "platform_config.h"
-#include "platform_typedef.h"
 #include "Xbee_Router_ATcmd.h"
 #include "Xbee_Digi_Router.h"
-#include "stm32_Uart_HAL.h"
-#include "timer.h"
 #include "Lamp_status.h"
 
+
 /* Global variable ------------------------------------------------------------*/
-_XBEE_DEV   Xbee_dev;
-_XBEE_RX    Xbee_rx;
+_XBEE_DEV   				Xbee_dev;
+_XBEE_RX    				Xbee_rx;
 RF_RX_STRUCT        RouterRF_Rx_Val;
 
+/* Private typedef -----------------------------------------------------------*/
+typedef enum
+{
+	RF_STATE_MCU_INIT = 0,
+	RF_STATE_RESTART_INIT,
+	RF_STATE_REFRESH_BUFFER,
+	RF_STATE_GET_DATA_INSIDE,
+	RF_STATE_MAIN,
+}RF_STATE_MACHINE;
+
+typedef struct
+{
+	RF_STATE_MACHINE 	state;
+	_XBEE_RX					xbee_Rx_buffer;
+	_XBEE_DEV					xbee_dev_buffer;
+}RF_MAIN_STRUCT;
+
+
+/* Private define ------------------------------------------------------------*/
 #define     NODE_ADDRESS_LEN    8
-u8 GW_Address[NODE_ADDRESS_LEN] = {0x00, 0x13, 0xA2, 0x00, 0x41, 0x4E, 0x00, 0xC4};
+
+#define 		RF_UART							USART3
+#define			RF_UART_BAUDRATE		9600
+
+#define 		RF_GPIO_CFG_PORT		GPIOB
+#define			RF_GPIO_CFG_PIN			GPIO_PIN_0
+
+#define 		RF_GPIO_RST_PORT		GPIOA
+#define			RF_GPIO_RST_PIN			GPIO_PIN_6
+
+#define 		RF_GPIO_RTS_PORT		GPIOC
+#define			RF_GPIO_RTS_PIN			GPIO_PIN_5
+
+#define 		RF_GPIO_CTS_PORT		GPIOC
+#define			RF_GPIO_CTS_PIN			GPIO_PIN_4
+
+/* Private macro -------------------------------------------------------------*/
+
+
+/* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef rf_huart;
+RF_MAIN_STRUCT rf_main;
+uint8_t GW_Address[NODE_ADDRESS_LEN] = {0x00, 0x13, 0xA2, 0x00, 0x41, 0x4E, 0x00, 0xC4};
 
 extern LAMP_STATUS_TYPE    Lamp_status_val;
 extern LAMP_COMMAND_TYPE   Lamp_cmd_signal;
+
+/* Private function prototypes -----------------------------------------------*/
+
+
+/* Private user code ---------------------------------------------------------*/
+
+
+
+
+
+
+
 
 /* static functions ------------------------------------------------------------*/
 // Since we're not using a dynamic frame dispatch table, we need to define
@@ -54,6 +96,173 @@ xbee_dispatch_table_entry_t xbee_frame_handlers[] =
     XBEE_FRAME_TABLE_END
 };
 
+/**
+  * @brief  RF's UART Init 
+  * @param  None
+  * @retval None
+  */
+static uint8_t u8_Init_RF_UART (void)
+{
+	rf_huart.Instance = RF_UART;
+	rf_huart.Init.BaudRate = RF_UART_BAUDRATE;
+	rf_huart.Init.WordLength = UART_WORDLENGTH_8B;
+	rf_huart.Init.StopBits = UART_STOPBITS_1;
+	rf_huart.Init.Parity = UART_PARITY_NONE;
+	rf_huart.Init.Mode = UART_MODE_TX_RX;
+	rf_huart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	rf_huart.Init.OverSampling = UART_OVERSAMPLING_16;
+	if (HAL_UART_Init(&rf_huart) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	return 0;
+}
+
+/**
+  * @brief  RF Module GPIO Init 
+  * @param  None
+  * @retval None
+  */
+static uint8_t u8_Init_RF_GPIO (void)
+{
+	GPIO_InitTypeDef GPIO_InitStruct;
+	
+	/*init for RF config pin*/
+  GPIO_InitStruct.Pin = RF_GPIO_CFG_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(RF_GPIO_CFG_PORT, &GPIO_InitStruct);
+	
+	/*init for RF reset pin*/
+  GPIO_InitStruct.Pin = RF_GPIO_RST_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(RF_GPIO_RST_PORT, &GPIO_InitStruct);
+	
+	/*init for RF ready to send pin*/
+  GPIO_InitStruct.Pin = RF_GPIO_RTS_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(RF_GPIO_RTS_PORT, &GPIO_InitStruct);
+	
+	/*init for RF clear to send pin*/
+  GPIO_InitStruct.Pin = RF_GPIO_CTS_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(RF_GPIO_CTS_PORT, &GPIO_InitStruct);
+	
+	return 0;
+}
+
+/**
+  * @brief  RF Module GPIO Init 
+  * @param  None
+  * @retval 0
+  */
+static uint8_t u8_Reset_RF_Module(void)
+{
+	HAL_Delay(200);
+	HAL_GPIO_WritePin(RF_GPIO_RST_PORT,RF_GPIO_RST_PIN,GPIO_PIN_RESET);
+	HAL_Delay(1000);
+	HAL_GPIO_WritePin(RF_GPIO_RST_PORT,RF_GPIO_RST_PIN,GPIO_PIN_SET);
+	HAL_Delay(200);
+	
+	return 0;
+}
+
+/**
+  * @brief  Init RF data
+  * @param  None
+  * @retval 0
+  */
+static uint8_t u8_Init_RF_Data(void)
+{
+	/*Init RF managerment data*/
+	rf_main.xbee_Rx_buffer.bytes_in_frame = 0;
+	rf_main.xbee_Rx_buffer.bytes_read = 0;
+	rf_main.xbee_Rx_buffer.state = XBEE_RX_STATE_WAITSTART;
+	
+	/*Init develop RF data*/
+	rf_main.xbee_dev_buffer.time_delay_In_ms = 3000;
+	rf_main.xbee_dev_buffer.state = XBEE_G_GET_MODULE_CONFIG;
+	rf_main.xbee_dev_buffer.frame_ID = 1;
+}
+	
+/**
+  * @brief  get config data inside RF module
+  * @param  None
+  * @retval None
+  */
+static uint8_t get_DataConfigInsideRFModule(void)
+{
+	uint8_t strLoc_ATcmd[2];
+	/*send command to get data inside RF module*/
+	strLoc_ATcmd[0] = 0x08;
+	strLoc_ATcmd[1] = xbee_next_frame_id();
+	xbee_frame_write(strLoc_ATcmd,2,"NI",2);
+	rf_main.xbee_dev_buffer.state = XBEE_G_GET_MODULE_CONFIG;
+	
+}
+	
+/**
+  * @brief  implement main handle for RF module 
+  * @param  None
+  * @retval None
+  */
+static uint8_t handle_RFModuleMainRuning(void)
+{
+	switch(rf_main.xbee_dev_buffer.state)
+	{
+		case XBEE_G_GET_MODULE_CONFIG :
+			break;
+		
+    case XBEE_G_GW_DISCOVERY :
+			break;
+		
+    case XBEE_G_GW_CONNECTED :
+			break;
+		
+		default:
+			break;
+	}
+}
+
+/**
+  * @brief  RF Module main handle
+  * @param  None
+  * @retval None
+  */
+void RF_Module_Main_Handle(void)
+{
+	switch(rf_main.state)
+	{
+		case RF_STATE_MCU_INIT: 
+			u8_Init_RF_UART();
+			u8_Init_RF_GPIO();
+			rf_main.state = RF_STATE_RESTART_INIT;
+			break;
+		
+		case RF_STATE_RESTART_INIT:
+			u8_Reset_RF_Module();
+			rf_main.state = RF_STATE_REFRESH_BUFFER;
+			break;
+		
+		case RF_STATE_REFRESH_BUFFER:
+			get_DataConfigInsideRFModule();
+			break;
+		
+		case RF_STATE_MAIN :
+			handle_RFModuleMainRuning();
+			break;
+		
+		default:
+			break;
+	}
+}
 
 /**
   * @brief  General initialize Radio module
@@ -62,33 +271,31 @@ xbee_dispatch_table_entry_t xbee_frame_handlers[] =
   */
 void Radio_Init(void)
 {
-    USART_InitTypeDef USART_InitStruct;
-    u8 Loc_header_ATcmd[2];
+	uint8_t Loc_header_ATcmd[2];
     //u8 Loc_data_ATcmd[2];
 
-    /* USART1 or USART3 configured as follow:
-    - BaudRate = 9600 baud
-    - Word Length = 8 Bits
-    - One Stop Bit
-    - No parity
-    - Hardware flow control disabled (RTS and CTS signals)
-    - Receive and transmit enabled
-    */
-    USART_InitStruct.USART_BaudRate = 9600;
-    USART_InitStruct.USART_WordLength = USART_WordLength_8b;
-    USART_InitStruct.USART_StopBits = USART_StopBits_1;
-    USART_InitStruct.USART_Parity = USART_Parity_No;
-    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	rf_huart.Instance = RF_UART;
+	rf_huart.Init.BaudRate = RF_UART_BAUDRATE;
+	rf_huart.Init.WordLength = UART_WORDLENGTH_8B;
+	rf_huart.Init.StopBits = UART_STOPBITS_1;
+	rf_huart.Init.Parity = UART_PARITY_NONE;
+	rf_huart.Init.Mode = UART_MODE_TX_RX;
+	rf_huart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	rf_huart.Init.OverSampling = UART_OVERSAMPLING_16;
+	if (HAL_UART_Init(&rf_huart) != HAL_OK)
+	{
+		Error_Handler();
+	}
+
     
-    /* disable the uart rx/tx before setting it up */
-    Disable_UART(Active_COM);
-    
-    STM_COMInit(Active_COM, &USART_InitStruct);
-    /* Configure CTS pin  */
-    STM_CTS_Init();
-    
-    COM_NVIC_Configuration(Active_COM);     //INIT INTERRUPT FOR UART
+//	/* disable the uart rx/tx before setting it up */
+//	Disable_UART(Active_COM);
+//	
+//	STM_COMInit(Active_COM, &USART_InitStruct);
+//	/* Configure CTS pin  */
+//	STM_CTS_Init();
+//	
+//	COM_NVIC_Configuration(Active_COM);     //INIT INTERRUPT FOR UART
 
     // Reset Radio module
     STM_Spec_GPIO_LOW(RESET_PIN);

@@ -1,9 +1,6 @@
 /** @file SW_Timer_Public.h
  *  @brief 
- *
- *
  *  @author : Thai Pham
- *  @author :
  *  @bug No known bugs.
  *  @day : March 6th, 2016
  */

@@ -30,3 +30,4 @@ dim_dali\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 dim_dali\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 dim_dali\main.o: ..\App\debug_printf\debug.h
 dim_dali\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+dim_dali\main.o: ..\App\sw_timer\SW_Timer_Public.h

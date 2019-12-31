@@ -22,20 +22,110 @@ Dialog DLL:      TCM.DLL V1.21.0.0
  
 <h2>Project:</h2>
 F:\VILIGHT\2019\GITHUB\dim_dali\dim_dali\MDK-ARM\dim_dali.uvprojx
-Project File Date:  12/30/2019
+Project File Date:  12/31/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Rebuild target 'dim_dali'
 assembling startup_stm32f103xe.s...
-compiling Xbee_Digi_Router.c...
-..\App\digi_mesh\platform_config.h(27): error:  #5: cannot open source input file "stm32f10x_rcc.h": No such file or directory
-  #include "stm32f10x_rcc.h"
-..\App\digi_mesh\Xbee_Digi_Router.c: 0 warnings, 1 error
 compiling Xbee_Router_ATcmd.c...
 ..\App\digi_mesh\platform_config.h(27): error:  #5: cannot open source input file "stm32f10x_rcc.h": No such file or directory
   #include "stm32f10x_rcc.h"
 ..\App\digi_mesh\Xbee_Router_ATcmd.c: 0 warnings, 1 error
+compiling Xbee_Digi_Router.c...
+..\App\digi_mesh\Xbee_Router_ATcmd.h(306): error:  #1032: Definition of nested anonymous union in packed "struct xbee_frame_receive_t" must be __packed
+  	addr64			ieee_address;
+..\App\digi_mesh\Xbee_Router_ATcmd.h(317): error:  #1032: Definition of nested anonymous union in packed "struct xbee_frame_receive_explicit_t" must be __packed
+  	addr64			ieee_address;
+..\App\digi_mesh\Xbee_Router_ATcmd.h(332): error:  #1032: Definition of nested anonymous union in packed "struct xbee_header_transmit_explicit_t" must be __packed
+  	addr64			ieee_address;
+..\App\digi_mesh\Xbee_Router_ATcmd.h(349): error:  #1031: Definition of "union xbee_at_cmd" in packed "struct xbee_header_local_at_resp" must be __packed
+  	xbee_at_cmd_t		command;
+..\App\digi_mesh\Xbee_Router_ATcmd.h(366): error:  #1032: Definition of nested anonymous union in packed "struct xbee_header_remote_at_resp" must be __packed
+  	addr64				ieee_address;
+..\App\digi_mesh\Xbee_Router_ATcmd.h(372): error:  #1031: Definition of "union xbee_at_cmd" in packed "struct xbee_header_remote_at_resp" must be __packed
+  	xbee_at_cmd_t		command;
+..\App\digi_mesh\Xbee_Digi_Router.c(192): warning:  #940-D: missing return statement at end of non-void function "u8_Init_RF_Data" 
+  }
+..\App\digi_mesh\Xbee_Digi_Router.c(203): warning:  #940-D: missing return statement at end of non-void function "get_DataConfigInsideRFModule" 
+  }
+..\App\digi_mesh\Xbee_Digi_Router.c(268): warning:  #223-D: function "STM_Spec_GPIO_LOW" declared implicitly
+      STM_Spec_GPIO_LOW(RESET_PIN);
+..\App\digi_mesh\Xbee_Digi_Router.c(268): error:  #20: identifier "RESET_PIN" is undefined
+      STM_Spec_GPIO_LOW(RESET_PIN);
+..\App\digi_mesh\Xbee_Digi_Router.c(269): warning:  #223-D: function "delay_ms" declared implicitly
+      delay_ms(100);
+..\App\digi_mesh\Xbee_Digi_Router.c(270): warning:  #223-D: function "STM_Spec_GPIO_HIGH" declared implicitly
+      STM_Spec_GPIO_HIGH(RESET_PIN);
+..\App\digi_mesh\Xbee_Digi_Router.c(276): warning:  #223-D: function "Enable_UART" declared implicitly
+      Enable_UART(Active_COM);
+..\App\digi_mesh\Xbee_Digi_Router.c(276): error:  #20: identifier "COM3" is undefined
+      Enable_UART(
+ctive_COM);
+..\App\digi_mesh\Xbee_Digi_Router.c(278): warning:  #223-D: function "RF_init_LED_Blink_cont" declared implicitly
+      RF_init_LED_Blink_cont();
+..\App\digi_mesh\Xbee_Digi_Router.c(285): warning:  #223-D: function "Enable_Uart_Irq" declared implicitly
+      Enable_Uart_Irq(Active_COM);
+..\App\digi_mesh\Xbee_Digi_Router.c(286): warning:  #223-D: function "COM_Send_byte" declared implicitly
+      COM_Send_byte( Active_COM, 0x00 ); /*send Null bytes because UART lost 1st byte in Tx*/
+..\App\digi_mesh\Xbee_Digi_Router.c(289): error:  #20: identifier "u16" is undefined
+      Xbee_dev.time_delay_In_ms = (u16)3000;
+..\App\digi_mesh\Xbee_Digi_Router.c(289): error:  #65: expected a ";"
+      Xbee_dev.time_delay_In_ms = (u16)3000;
+..\App\digi_mesh\Xbee_Digi_Router.c(298): error:  #20: identifier "LED1_PIN" is undefined
+      STM_Spec_GPIO_HIGH(LED1_PIN);
+..\App\digi_mesh\Xbee_Digi_Router.c(315): error:  #20: identifier "u8" is undefined
+  void Xbee_AppRouterSetGWAddr(u8 * address)
+..\App\digi_mesh\Xbee_Digi_Router.c(317): error:  #20: identifier "u8" is undefined
+      u8 tempcount = 0;
+..\App\digi_mesh\Xbee_Digi_Router.c(349): warning:  #223-D: function "Get_Timer_expired" declared implicitly
+          if(1 == Get_Timer_expired(DELAY_BEFORE_SEND_TIMER))
+..\App\digi_mesh\Xbee_Digi_Router.c(349): error:  #20: identifier "DELAY_BEFORE_SEND_TIMER" is undefined
+          if(1 == Get_Timer_expired(DELAY_BEFORE_SEND_TIMER))
+..\App\digi_mesh\Xbee_Digi_Router.c(351): warning:  #223-D: function "Timer_Stop" declared implicitly
+              Timer_Stop(DELAY_BEFORE_SEND_TIMER);
+..\App\digi_mesh\Xbee_Digi_Router.c(372): error:  #20: identifier "u8" is undefined
+  u8 xbee_next_frame_id( void )
+..\App\digi_mesh\Xbee_Digi_Router.c(394): warning:  #223-D: function "COM_Get_Error_Status" declared implicitly
+      if(COM_Get_Error_Status(Active_COM) == SET)
+..\App\digi_mesh\Xbee_Digi_Router.c(394): error:  #20: identifier "COM3" is undefined
+      if(COM_Get_Error_Status(
+ctive_COM) == SET)
+..\App\digi_mesh\Xbee_Digi_Router.c(397): warning:  #223-D: function "UART_Read_Byte" declared implicitly
+          char_rxd = UART_Read_Byte(Active_COM);
+..\App\digi_mesh\Xbee_Digi_Router.c(401): warning:  #223-D: function "COM_Get_RXIT_Status" declared implicitly
+          while ( COM_Get_RXIT_Status(Active_COM) == SET)
+..\App\digi_mesh\Xbee_Digi_Router.c(404): warning:  #223-D: function "UART_Read_Byte" declared implicitly
+              char_rxd = UART_Read_Byte(Active_COM);
+..\App\digi_mesh\Xbee_Digi_Router.c(451): error:  #20: identifier "u8" is undefined
+  u8 _xbee_checksum( u8 *bytes, u8 length, u8 initial)
+..\App\digi_mesh\Xbee_Digi_Router.c(451): error:  #20: identifier "u8" is undefined
+  u8 _xbee_checksum( u8 *bytes, u8 length, u8 initial)
+..\App\digi_mesh\Xbee_Digi_Router.c(451): error:  #20: identifier "u8" is undefined
+  u8 _xbee_checksum( u8 *bytes, u8 length, u8 initial)
+..\App\digi_mesh\Xbee_Digi_Router.c(451): error:  #20: identifier "u8" is undefined
+  u8 _xbee_checksum( u8 *bytes, u8 length, u8 initial)
+..\App\digi_mesh\Xbee_Digi_Router.c(455): error:  #20: identifier "u8" is undefined
+      u8 *p;
+..\App\digi_mesh\Xbee_Digi_Router.c(455): error:  #20: identifier "p" is undefined
+      u8 *p;
+..\App\digi_mesh\Xbee_Digi_Router.c(458): error:  #29: expected an expression
+      p = (u8 *)bytes;
+..\App\digi_mesh\Xbee_Digi_Router.c(458): error:  #65: expected a ";"
+      p = (u8 *)bytes;
+..\App\digi_mesh\Xbee_Digi_Router.c(501): error:  #20: identifier "u8" is undefined
+  int xbee_frame_write( void *header, u8 headerlen, u8 *data, u8 datalen)
+..\App\digi_mesh\Xbee_Digi_Router.c(501): error:  #20: identifier "u8" is undefined
+  int xbee_frame_write( void *header, u8 headerlen, u8 *data, u8 datalen)
+..\App\digi_mesh\Xbee_Digi_Router.c(501): error:  #20: identifier "u8" is undefined
+  int xbee_frame_write( void *header, u8 headerlen, u8 *data, u8 datalen)
+..\App\digi_mesh\Xbee_Digi_Router.c(503): error:  #20: identifier "u8" is undefined
+      u8 Loc_Tx_Buf[3];
+..\App\digi_mesh\Xbee_Digi_Router.c(505): error:  #20: identifier "u8" is undefined
+      u8 framesize;
+..\App\digi_mesh\Xbee_Digi_Router.c(506): error:  #20: identifier "u8" is undefined
+      u8 checksum = 0xFF;
+..\App\digi_mesh\Xbee_Digi_Router.c: 15 warnings, 30 errors
 compiling dali.c...
 ..\App\dali\tim.h(33): error:  #20: identifier "TIM_HandleTypeDef" is undefined
   extern TIM_HandleTypeDef htim6;
@@ -44,14 +134,17 @@ compiling dali.c...
 ..\App\dali\dali.c(50): error:  #5: cannot open source input file "gpio.h": No such file or directory
   #include "gpio.h"
 ..\App\dali\dali.c: 0 warnings, 3 errors
-compiling main.c...
-compiling stm32f1xx_it.c...
-compiling stm32f1xx_hal_msp.c...
 compiling debug.c...
+compiling Lamp_status.c...
+compiling stm32f1xx_it.c...
+compiling main.c...
+compiling SW_Timer.c...
 compiling stm32f1xx_hal_gpio_ex.c...
+compiling debug.c...
+compiling stm32f1xx_hal_msp.c...
 compiling stm32f1xx_hal_dac_ex.c...
-compiling stm32f1xx_hal_iwdg.c...
 compiling stm32f1xx_hal_dac.c...
+compiling stm32f1xx_hal_iwdg.c...
 compiling stm32f1xx_hal_tim.c...
 compiling stm32f1xx_hal_tim_ex.c...
 compiling stm32f1xx_hal_uart.c...
@@ -66,7 +159,7 @@ compiling stm32f1xx_hal_flash.c...
 compiling stm32f1xx_hal_flash_ex.c...
 compiling system_stm32f1xx.c...
 compiling stm32f1xx_hal_exti.c...
-"dim_dali\dim_dali.axf" - 5 Error(s), 0 Warning(s).
+"dim_dali\dim_dali.axf" - 34 Error(s), 15 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -85,7 +178,7 @@ Package Vendor: ARM
 
    * Component: ARM::CMSIS:CORE:5.0.0
 Target not created.
-Build Time Elapsed:  00:00:20
+Build Time Elapsed:  00:00:23
 </pre>
 </body>
 </html>
